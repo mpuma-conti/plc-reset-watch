@@ -23,5 +23,5 @@ y, manteniendo pulsado uno 1,5 s, envía el reset y muestra la respuesta.
 ```powershell
 .\adb pair IP_RELOJ:PUERTO_EMPAREJAMIENTO     # solo la primera vez; pide el código de 6 dígitos
 .\adb connect IP_RELOJ:PUERTO_DEPURACION
-.\adb install -r C:\ruta\plc-reset-vN.apk
+.\adb install -r C:\ruta\plc-reset-vN.apk o .\adb -s IP_RELOJ:PUERTO_DEPURACION install -r "$env:USERPROFILE\Downloads\plc-reset-v2.apk"
 ```
