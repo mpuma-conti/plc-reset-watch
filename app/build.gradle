@@ -1,0 +1,58 @@
+plugins {
+    id 'com.android.application'
+}
+
+// La URL y la clave del webhook llegan como variables de entorno desde los
+// "secrets" de GitHub Actions. Nunca se escriben en el código.
+def n8nUrl = (System.getenv('N8N_URL') ?: '').trim()
+def n8nKey = (System.getenv('N8N_API_KEY') ?: '').trim()
+def runNumber = (System.getenv('GITHUB_RUN_NUMBER') ?: '1').toInteger()
+
+android {
+    namespace 'pe.tesla.plcreset'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'pe.tesla.plcreset'
+        minSdk 30          // Wear OS 3 o superior
+        targetSdk 35
+        versionCode runNumber
+        versionName "1.0.${runNumber}"
+        buildConfigField 'String', 'N8N_URL', "\"${n8nUrl}\""
+        buildConfigField 'String', 'N8N_API_KEY', "\"${n8nKey}\""
+    }
+
+    // Firma fija: permite actualizar la app con "adb install -r" sin desinstalar.
+    signingConfigs {
+        fija {
+            storeFile file('signing.keystore')
+            storePassword 'android'
+            keyAlias 'plcreset'
+            keyPassword 'android'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.fija
+        }
+        debug {
+            signingConfig signingConfigs.fija
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+}
